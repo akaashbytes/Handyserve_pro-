@@ -1,0 +1,51 @@
+server:
+  port: 8081
+
+# ── Oracle DataSource ─────────────────────────────────────────────────────────
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:XE
+    # For Oracle 19c+ / ATP use:
+    # url: jdbc:oracle:thin:@//localhost:1521/XEPDB1
+    username: HANDYSERVE
+    password: handyserve123
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: update        # use 'validate' in production
+    show-sql: false
+    database-platform: org.hibernate.community.dialect.OracleLegacyDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.community.dialect.OracleLegacyDialect
+        format_sql: true
+        default_schema: HANDYSERVE
+
+  # ── MongoDB ─────────────────────────────────────────────────────────────────
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/handyserve
+
+  # ── Disable Spring Boot's auto-config for multiple datasources ───────────────
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+
+# ── JWT ───────────────────────────────────────────────────────────────────────
+jwt:
+  secret: handyserve_super_secret_key_for_jwt_minimum_256_bits_change_in_prod
+  expiration-ms: 900000          # 15 minutes
+  refresh-expiration-ms: 604800000  # 7 days
+
+# ── CORS / Client ─────────────────────────────────────────────────────────────
+app:
+  client-origin: http://localhost:5173
+  nominatim-base: https://nominatim.openstreetmap.org
+
+# ── Actuator ─────────────────────────────────────────────────────────────────
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
